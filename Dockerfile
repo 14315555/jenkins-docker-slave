@@ -29,11 +29,6 @@ apt-get -y install software-properties-common wget curl jq git iptables ca-certi
 add-apt-repository ppa:webupd8team/java -y && \
 apt-get update
 
-RUN \
-apt-get -y install python-pip \
-&& apt-get update \
-&& pip install docker-compose 
-
 #ADD settings.xml /home/jenkins/.m2/
 # Copy authorized keys
 COPY .ssh/authorized_keys /home/jenkins/.ssh/authorized_keys
@@ -43,22 +38,16 @@ RUN chown -R jenkins:jenkins /home/jenkins/.m2/ && \
 # Standard SSH port
 EXPOSE 22
 
-ENV DOCKER_VERSION 1.12.3
-
 # We install newest docker into our docker in docker container
 RUN \
-curl -L https://get.docker.com/builds/Linux/x86_64/docker-${DOCKER_VERSION}.tgz > /tmp/docker-${DOCKER_VERSION}.tgz \
- && tar -zxf /tmp/docker-${DOCKER_VERSION}.tgz -C /tmp \
- && cp /tmp/docker/docker /usr/local/bin/docker \
- && chmod +x /usr/local/bin/docker \
- && rm -rf /tmp/docker-${DOCKER_VERSION}.tgz /tmp/docker \
- #&& curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
- #&& chmod +x /usr/local/bin/docker-compose
+curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-latest.tgz && \
+tar --strip-components=1 -xvzf docker-latest.tgz -C /usr/local/bin && \
+chmod +x /usr/local/bin/docker && \
+curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && \
+chmod +x /usr/local/bin/docker-compose && \
+docker-compose --version
 
 VOLUME /var/lib/docker
-#VOLUME /var/lib/docker-compose
 
-# check installation
-RUN docker-compose -v
 
 CMD ["/usr/sbin/sshd", "-D"]
