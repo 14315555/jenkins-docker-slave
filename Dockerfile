@@ -32,22 +32,7 @@ apt-get update
 RUN \
 apt-get -y install python-pip \
 && apt-get update \
-&& pip install docker-compose
-
-ENV DOCKER_VERSION 1.12.3
-
-# We install newest docker into our docker in docker container
-RUN \
-curl -L https://get.docker.com/builds/Linux/x86_64/docker-${DOCKER_VERSION}.tgz > /tmp/docker-${DOCKER_VERSION}.tgz \
- && tar -zxf /tmp/docker-${DOCKER_VERSION}.tgz -C /tmp \
- && cp /tmp/docker/docker /usr/local/bin/docker \
- && chmod +x /usr/local/bin/docker \
- && rm -rf /tmp/docker-${DOCKER_VERSION}.tgz /tmp/docker \
- && curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
- && chmod +x /usr/local/bin/docker-compose
-
-#VOLUME /var/lib/docker
-#VOLUME /var/lib/docker-compose
+&& pip install docker-compose 
 
 #ADD settings.xml /home/jenkins/.m2/
 # Copy authorized keys
@@ -58,7 +43,20 @@ RUN chown -R jenkins:jenkins /home/jenkins/.m2/ && \
 # Standard SSH port
 EXPOSE 22
 
+ENV DOCKER_VERSION 1.12.3
 
+# We install newest docker into our docker in docker container
+RUN \
+curl -L https://get.docker.com/builds/Linux/x86_64/docker-${DOCKER_VERSION}.tgz > /tmp/docker-${DOCKER_VERSION}.tgz \
+ && tar -zxf /tmp/docker-${DOCKER_VERSION}.tgz -C /tmp \
+ && cp /tmp/docker/docker /usr/local/bin/docker \
+ && chmod +x /usr/local/bin/docker \
+ && rm -rf /tmp/docker-${DOCKER_VERSION}.tgz /tmp/docker \
+ #&& curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+ #&& chmod +x /usr/local/bin/docker-compose
+
+VOLUME /var/lib/docker
+#VOLUME /var/lib/docker-compose
 
 # check installation
 RUN docker-compose -v
