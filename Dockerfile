@@ -29,6 +29,11 @@ apt-get -y install software-properties-common wget curl jq git iptables ca-certi
 add-apt-repository ppa:webupd8team/java -y && \
 apt-get update
 
+RUN \
+apt-get -y install python-pip \
+&& apt-get update \
+&& pip install docker-compose
+
 ENV DOCKER_VERSION 1.12.3
 
 # We install newest docker into our docker in docker container
