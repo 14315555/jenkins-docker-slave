@@ -39,7 +39,6 @@ RUN chown -R jenkins:jenkins /home/jenkins/.m2/ && \
 EXPOSE 22
 
 ENV DOCKER_VERSION 1.12.3
-ENV COMPOSE_VERSION 1.9.0
 
 # We install newest docker into our docker in docker container
 RUN \
@@ -48,8 +47,8 @@ curl -L https://get.docker.com/builds/Linux/x86_64/docker-${DOCKER_VERSION}.tgz 
  && cp /tmp/docker/docker /usr/local/bin/docker \
  && chmod +x /usr/local/bin/docker \
  && rm -rf /tmp/docker-${DOCKER_VERSION}.tgz /tmp/docker \
- && curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-Linux-x86_64 > /usr/bin/docker-compose \
- && chmod +x /usr/bin/docker-compose
+ && curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+ && chmod +x /usr/local/bin/docker-compose
 
 #VOLUME /var/lib/docker
 #VOLUME /var/lib/docker-compose
