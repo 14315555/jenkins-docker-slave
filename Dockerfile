@@ -29,15 +29,6 @@ apt-get -y install software-properties-common wget curl jq git iptables ca-certi
 add-apt-repository ppa:webupd8team/java -y && \
 apt-get update
 
-#ADD settings.xml /home/jenkins/.m2/
-# Copy authorized keys
-COPY .ssh/authorized_keys /home/jenkins/.ssh/authorized_keys
-
-RUN chown -R jenkins:jenkins /home/jenkins/.m2/ && \
-    chown -R jenkins:jenkins /home/jenkins/.ssh/
-# Standard SSH port
-EXPOSE 22
-
 ENV DOCKER_VERSION 1.12.3
 
 # We install newest docker into our docker in docker container
@@ -52,6 +43,17 @@ curl -L https://get.docker.com/builds/Linux/x86_64/docker-${DOCKER_VERSION}.tgz 
 
 #VOLUME /var/lib/docker
 #VOLUME /var/lib/docker-compose
+
+#ADD settings.xml /home/jenkins/.m2/
+# Copy authorized keys
+COPY .ssh/authorized_keys /home/jenkins/.ssh/authorized_keys
+
+RUN chown -R jenkins:jenkins /home/jenkins/.m2/ && \
+    chown -R jenkins:jenkins /home/jenkins/.ssh/
+# Standard SSH port
+EXPOSE 22
+
+
 
 # check installation
 RUN docker-compose -v
